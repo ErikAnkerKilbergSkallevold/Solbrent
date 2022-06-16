@@ -1,0 +1,17 @@
+Bruker du dark mode eller light mode?
+Svar:
+Kan du endre hudfargen din?
+Tid:
+Kommentar:
+Kan du si meg hvor sterk UV det er?
+Tid:
+Kommentar:
+Kan du si meg hvilken UV solkrem du trenger?
+Tid:
+Kommentar:
+Vet du hvor lenge det er til du må smøre deg?
+Tid:
+Kommentar:
+Kan du legge inn addressen din?
+Tid:
+Kommentar:

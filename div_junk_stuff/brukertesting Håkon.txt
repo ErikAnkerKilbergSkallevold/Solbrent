@@ -1,0 +1,19 @@
+Bruker du dark mode eller light mode?
+Svar: Dark Mode, ingen tekst som er vanskelig å lese.
+Kan du endre hudfargen din?
+Tid: 8sek
+Kommentar: Det var sånn, det må være på min side, også var det midt på skjermen.
+Kan du si meg hvor sterk UV det er?
+Tid: 02,90 sek
+Kommentar: Sa det helt riktig. Foretrekker at det står ubetydelig stråling, siden han ikke har forhold til Uvi, men liker at det står Uvi uansett. Kommer til å få ett forhold til det.
+Kan du si meg hvilken UV solkrem du trenger?
+Tid: 25,89sek
+Kommentar: I testappen stod det ubetydlig stråling, men placeholder bilde sa SPF"50". Hvis det hadde matchet så hadde det vært forståelig og det er kult design.
+Vet du hvor lenge det er til du må smøre deg?
+Tid: 5.97sek
+Kommentar: Dere burde ha med bading eller ikke. Solkremen forsvinner når man bader. Ellers kult
+Kan du legge inn addressen din?
+Tid: 18,08sek
+Kommentar: Trodde det var på minside, men fant ikke og tenkte det at det måtte være søkeglasset. 
+Hvordan fungerer bottomnav
+Kommentar: Antar at knappene i bunn er navigering. Enkelt. 

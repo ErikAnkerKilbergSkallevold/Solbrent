@@ -1,0 +1,20 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <circle class="cls-1" cx="22.5" cy="22.5" r="12"/>
+  <rect class="cls-1" x="21.5" y="0.5" width="2" height="8" rx="1"/>
+  <rect class="cls-1" x="21.5" y="36.5" width="2" height="8" rx="1"/>
+  <rect class="cls-1" x="7216.5" y="7195.5" width="2" height="8" rx="1" transform="translate(-7159 7240) rotate(-90)"/>
+  <rect class="cls-1" x="7180.5" y="7195.5" width="2" height="8" rx="1" transform="translate(-7195 7204) rotate(-90)"/>
+  <rect class="cls-1" x="7186.5" y="7184.5" width="2" height="6" rx="1" transform="translate(-10154.15998 10.5) rotate(-45)"/>
+  <rect class="cls-1" x="7186.5" y="7208.5" width="2" height="6" rx="1" transform="translate(27.46729 -10147.13055) rotate(44.99998)"/>
+  <rect class="cls-1" x="7210.5" y="7184.5" width="2" height="6" rx="1" transform="translate(17.52944 -10171.13054) rotate(45)"/>
+  <rect class="cls-1" x="7210.5" y="7208.5" width="2" height="6" rx="1" transform="translate(-10164.10111 34.49999) rotate(-45)"/>
+</svg>
