@@ -1,4 +1,6 @@
-# IN2000 Project Solbrent
+# IN2000 Project Solbrent🏆
+
+Vinner av "visuelt slående" prisen ved UiO høst 2022
 
 ## Important naming and stuff
 
