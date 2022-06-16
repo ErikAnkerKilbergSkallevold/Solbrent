@@ -1,5 +1,7 @@
 # IN2000 Project Solbrent🏆
 
+
+![applogo]([http://url/to/img.png](https://imgur.com/a/oloQe8l))
 Vinner av "visuelt slående" prisen ved UiO høst 2022
 
 ## Important naming and stuff
