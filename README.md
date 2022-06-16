@@ -1,4 +1,7 @@
-# IN2000 Project Solbrent
+# IN2000 Project Solbrent🏆
+
+[![Applogo](https://imgur.com/a/oloQe8l)](https://imgur.com/a/oloQe8l)
+Vinner av "visuelt slående" prisen ved UiO høst 2022
 
 ## Important naming and stuff
 
@@ -19,5 +22,11 @@
 https://softwareengineering.stackexchange.com/questions/426161/how-are-changes-propagated-from-the-viewmodel-to-the-model-and-how-often-in-mvvm
 
 - Ha et lite felt med *last update* i bunnen av cardviewet. 
+
+## Images
+
+[![Frontpage](https://imgur.com/a/0yXwUIq)](https://imgur.com/a/0yXwUIq)
+
+[![App](https://imgur.com/a/S3MCvbb)](https://imgur.com/a/S3MCvbb)
 
 
