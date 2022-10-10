@@ -20,8 +20,8 @@ class DataSourceRepository(val context: Context) {
      * new data.
      */
     suspend fun getWeatherData(latitude: Double, longitude: Double): MetResponseDto? {
-        var hasCache: Boolean = false // Is set to true once the app has loaded some data
-        var updateIsDue: Boolean = true
+        val hasCache = false // Is set to true once the app has loaded some data
+        val updateIsDue = true
 
         // Vi hadde ikke tid til å løse caching, men har lagt opp til at det skal være lett
         // å implementere her.
@@ -35,27 +35,24 @@ class DataSourceRepository(val context: Context) {
     }
 
     suspend fun getLocationData(latitude : Double, longitude : Double): String? {
-        var locationData = locationDataSource.findLocationNameFromLatLong(latitude, longitude)
+        val locationData = locationDataSource.findLocationNameFromLatLong(latitude, longitude)
         if (locationData != null) {
-            if(locationData.address?.city != null){
-                return locationData.address?.city
-            }
-            else{
+            return if(locationData.address?.city != null){
+                locationData.address.city
+            } else{
                 //Print out the location data
-                    if(locationData.address?.municipality != null){
-                        return locationData.address?.municipality
-                    }
-                    else{
-                        return locationData.address?.county
-                    }
+                if(locationData.address?.municipality != null){
+                    locationData.address.municipality
+                } else{
+                    locationData.address?.county
+                }
             }
         }
         return null
     }
 
-    suspend fun getLocationNamesBasedOnString(searchQuery : String): List<NominatimLocationFromString>? {
-        var locationData = locationDataSource.findLocationNamesFromString(searchQuery)
-        return locationData
+    suspend fun getLocationNamesBasedOnString(searchQuery: String): List<NominatimLocationFromString>? {
+        return locationDataSource.findLocationNamesFromString(searchQuery)
     }
 
     //Henter farge fra sharedpreferences

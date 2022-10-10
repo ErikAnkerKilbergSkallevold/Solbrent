@@ -10,7 +10,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.example.in2000_team32.R
 
 class ViewPagerAdapterHome(val context: Context) : PagerAdapter() {
-    var layoutInflater: LayoutInflater? = null
+    private var layoutInflater: LayoutInflater? = null
 
 
     private val headArray = arrayOf(
@@ -54,12 +54,12 @@ class ViewPagerAdapterHome(val context: Context) : PagerAdapter() {
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = layoutInflater!!.inflate(R.layout.slider_home,container,false)
-        val txt_head = view.findViewById<TextView>(R.id.textHeader)
-        val txt_desc = view.findViewById<TextView>(R.id.textForklaring)
+        val txtHead = view.findViewById<TextView>(R.id.textHeader)
+        val txtDesc = view.findViewById<TextView>(R.id.textForklaring)
 
 
-        txt_head.text = headArray[position]
-        txt_desc.text = descriptionArray[position]
+        txtHead.text = headArray[position]
+        txtDesc.text = descriptionArray[position]
 
 
 

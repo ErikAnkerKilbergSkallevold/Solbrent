@@ -44,24 +44,24 @@ class UvForecastGraphView(context: Context?, attrs: AttributeSet?): View(context
 
     override fun draw(canvas: Canvas?) {
         super.draw(canvas)
-        var numberOfBars = DATALENGTH
+        val numberOfBars = DATALENGTH
 
         var timeXaxis = startTime
 
-        var margin = 5f
+        val margin = 5f
         val leftMargin = 30f
-        var boxWidth = ((canvasWidth - margin - leftMargin) / numberOfBars)
+        val boxWidth = ((canvasWidth - margin - leftMargin) / numberOfBars)
 
         // User specified
-        var barHeight = 0f
+        var barHeight: Float
 
         val scale = 10
         val blockHeight = (canvasHeight / scale) - 10
         val bottomMargin = 30
 
         // Y axis
-        val yP: Paint = Paint()
-        yP.setColor(Color.GRAY)
+        val yP = Paint()
+        yP.color = Color.GRAY
         yP.strokeWidth = 1.0f
         yP.textSize = 20f
 
@@ -83,12 +83,12 @@ class UvForecastGraphView(context: Context?, attrs: AttributeSet?): View(context
 
             barHeight = data[i] * blockHeight
 
-            paint.color = context.getColor(R.color.graph_purple).toInt()
-            if (data[i] < 10) paint.color = context.getColor(R.color.graph_purple).toInt()
-            if (data[i] < 8) paint.color = context.getColor(R.color.graph_red).toInt()
-            if (data[i] < 6) paint.color = context.getColor(R.color.graph_orange).toInt()
-            if (data[i] < 4) paint.color = context.getColor(R.color.graph_yellow).toInt()
-            if (data[i] < 2) paint.color = context.getColor(R.color.graph_green).toInt()
+            paint.color = context.getColor(R.color.graph_purple)
+            if (data[i] < 10) paint.color = context.getColor(R.color.graph_purple)
+            if (data[i] < 8) paint.color = context.getColor(R.color.graph_red)
+            if (data[i] < 6) paint.color = context.getColor(R.color.graph_orange)
+            if (data[i] < 4) paint.color = context.getColor(R.color.graph_yellow)
+            if (data[i] < 2) paint.color = context.getColor(R.color.graph_green)
 
             //paint.shader = LinearGradient(0f, 0f, 0f, 100f, 0xFF1F9928.toInt(), 0xFF184F1E.toInt(), Shader.TileMode.MIRROR)
 
@@ -100,11 +100,11 @@ class UvForecastGraphView(context: Context?, attrs: AttributeSet?): View(context
             canvas?.drawRoundRect(RectF(left, top, right, bottom), 6f, 6f, paint)
 
             // Write text to indicate time on x axis
-            val p: Paint = Paint()
+            val p = Paint()
             val timeInterval = 6
             if (i % timeInterval == 0) {
-                p.setColor(Color.GRAY)
-                p.setTextSize(28f)
+                p.color = Color.GRAY
+                p.textSize = 28f
                 val timeString: String = "%02d".format(timeXaxis)
                 canvas?.drawText(timeString, (i * boxWidth) + (margin / 2) + leftMargin, height - 0f, p)
                 timeXaxis += timeInterval

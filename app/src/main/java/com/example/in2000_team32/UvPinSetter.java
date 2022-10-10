@@ -1,11 +1,5 @@
 package com.example.in2000_team32;
 
-import android.app.Activity;
-import android.widget.ImageView;
-import android.view.View;
-import androidx.percentlayout.widget.PercentLayoutHelper;
-import androidx.percentlayout.widget.PercentRelativeLayout;
-
 public class UvPinSetter {
 /*
     private Integer percent;

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.in2000_team32.ui.home
 
 import android.Manifest
@@ -5,7 +7,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -51,7 +52,7 @@ import kotlin.math.roundToInt
 
 
 class HomeFragment : Fragment() {
-    var show = false
+    private var show = false
     private val current: LocalDateTime = LocalDateTime.now()
     private val formatter: DateTimeFormatter =
         DateTimeFormatter.ofPattern("HH", Locale.getDefault())
@@ -61,7 +62,7 @@ class HomeFragment : Fragment() {
     private var location: Location = Location(PASSIVE_PROVIDER)
     private var observersStarted = false
     private lateinit var locationManager: LocationManager
-    var appVisible = false
+    private var appVisible = false
 
     // This property is only valid between onCreateView and onDestroyView.
     private lateinit var homeViewModel: HomeViewModel
@@ -106,18 +107,17 @@ class HomeFragment : Fragment() {
     ): View {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        var root: View
         dataSourceRepository = DataSourceRepository(requireContext())
         loadingSearchSpinner = binding.progressBar4
         loadingSearchSpinner.visibility = View.GONE
         searchQueryRecycler = binding.searchQueryRecycler
 
         //Check if user has internet connection
-        if (!isNetworkAvailable()) {
+        val root: View = if (!isNetworkAvailable()) {
             Toast.makeText(context, "No internet connection", Toast.LENGTH_LONG).show()
-            root = View(context)
+            View(context)
         } else {
-            root = binding.root
+            binding.root
         }
 
         //SearchAdapter
@@ -126,16 +126,13 @@ class HomeFragment : Fragment() {
         homeViewModel.getPlaces().observe(viewLifecycleOwner) {
             if (it != null) {
                 //Check if it is not null
-                if (loadingSearchSpinner != null) {
-                    //Check if it is visible
-                    if (loadingSearchSpinner.visibility == View.VISIBLE) {
-                        //Hide loading spinner
-                        loadingSearchSpinner.visibility = View.GONE
-                    }
+                if (loadingSearchSpinner.visibility == View.VISIBLE) {
+                    //Hide loading spinner
+                    loadingSearchSpinner.visibility = View.GONE
                 }
                 if (it.isNotEmpty()) {
                     //Set adapter
-                    searchQueryRecycler?.adapter =
+                    searchQueryRecycler.adapter =
                         SearchAdapter(it as MutableList<NominatimLocationFromString>, this.context)
                 }
             }
@@ -215,20 +212,17 @@ class HomeFragment : Fragment() {
 
     fun startApp() {
         //Check if city is null in shared preferences
-        var chosenLocation: ChosenLocation? = dataSourceRepository.getChosenLocation()
+        val chosenLocation: ChosenLocation? = dataSourceRepository.getChosenLocation()
 
         if (chosenLocation == null) {
             mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             //Make toast that user has to choose a city
         } else {
-            if (chosenLocation == null) {
-                chosenLocation = ChosenLocation("", 0.0, 0.0)
-            }
             grabInfo(chosenLocation)
         }
     }
 
-    fun showSearch() {
+    private fun showSearch() {
         show = true
         binding.EditTextAddress.requestFocus()
         activity?.let { showKeyboard(it) }
@@ -236,16 +230,16 @@ class HomeFragment : Fragment() {
         binding.searchButton.setImageResource(R.drawable.ic_baseline_check_24)
     }
 
-    fun hideSearch() {
+    private fun hideSearch() {
         val searchDistance = resources.getDimensionPixelSize(R.dimen.searchDistance).toFloat()
         show = false
-        binding.EditTextAddress.getText().clear()
+        binding.EditTextAddress.text.clear()
         hideKeyboard()
         binding.searchLayout1.animate().translationY(searchDistance)
         binding.searchButton.setImageResource(R.drawable.ic_baseline_search_24)
     }
 
-    fun startSearchListener() {
+    private fun startSearchListener() {
         //Listen for input from EditTextAddress and print it to console
         binding.EditTextAddress.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -260,27 +254,25 @@ class HomeFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 homeViewModel.fetchPlaces(s.toString())
                 //Check if loadingSearchSpinner and searchQueryRecyler is not null
-                if (loadingSearchSpinner != null && searchQueryRecycler != null) {
-                    //If so, show loading spinner and hide recycler
-                    loadingSearchSpinner.visibility = View.VISIBLE
-                    searchQueryRecycler.adapter = SearchAdapter(mutableListOf(), activity)
-                }
+                //If so, show loading spinner and hide recycler
+                loadingSearchSpinner.visibility = View.VISIBLE
+                searchQueryRecycler.adapter = SearchAdapter(mutableListOf(), activity)
                 startApp()
             }
         })
     }
 
-    fun Fragment.hideKeyboard() {
+    private fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
-    fun Context.hideKeyboard(view: View) {
+    private fun Context.hideKeyboard(view: View) {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun showKeyboard(activity: FragmentActivity) {
+    private fun showKeyboard(activity: FragmentActivity) {
         val inputMethodManager =
             activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInputFromWindow(
@@ -290,7 +282,7 @@ class HomeFragment : Fragment() {
         )
     }
 
-    val mPermissionResult = registerForActivityResult(RequestPermission()) { result ->
+    private val mPermissionResult = registerForActivityResult(RequestPermission()) { result ->
         if (result) {
             getLocation()
         } else {
@@ -303,44 +295,37 @@ class HomeFragment : Fragment() {
         }
     }
 
-    val locationListener = LocationListener { l ->
+    private val locationListener = LocationListener { l ->
         location = l
-        var chosenLocation: ChosenLocation? = dataSourceRepository.getChosenLocation()
+        val chosenLocation: ChosenLocation? = dataSourceRepository.getChosenLocation()
         if (chosenLocation == null) {
             mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            if (chosenLocation == null) {
-                chosenLocation = ChosenLocation("", 0.0, 0.0)
-            }
             grabInfo(chosenLocation)
         }
     }
 
-    fun grabInfo(chosenLocation: ChosenLocation) {
-        var currentActivity = getActivity()
+    private fun grabInfo(chosenLocation: ChosenLocation) {
+        val currentActivity = activity
         if (currentActivity != null) {
             if (chosenLocation.city == "") {
                 //Check if location is not null
-                if (location != null && location.latitude != null && location.longitude != null) {
-                    //If so, get city and country from location
-                    homeViewModel.fetchLocationData(location.latitude, location.longitude)
-                    homeViewModel.fetchWeatherData(location.latitude, location.longitude)
+                //If so, get city and country from location
+                homeViewModel.fetchLocationData(location.latitude, location.longitude)
+                homeViewModel.fetchWeatherData(location.latitude, location.longitude)
 
-                    if (observersStarted == false) {
-                        startObserverne(ChosenLocation("", 0.0, 0.0))
-                        observersStarted = true
-                    }
+                if (!observersStarted) {
+                    startObserverne(ChosenLocation("", 0.0, 0.0))
+                    observersStarted = true
                 }
 
             } else {
                 //Print out chosen location
-                var lat = chosenLocation.lat
-                var lon = chosenLocation.lon
-                if (lat != null && lon != null) {
-                    homeViewModel.fetchLocationData(lat, lon)
-                    homeViewModel.fetchWeatherData(lat, lon)
-                }
-                if (observersStarted == false) {
+                val lat = chosenLocation.lat
+                val lon = chosenLocation.lon
+                homeViewModel.fetchLocationData(lat, lon)
+                homeViewModel.fetchWeatherData(lat, lon)
+                if (!observersStarted) {
                     startObserverne(ChosenLocation(chosenLocation.city, lat, lon))
                     observersStarted = true
                 }
@@ -348,33 +333,33 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun isNetworkAvailable(): Boolean {
-        var currentActivity = getActivity()
+    private fun isNetworkAvailable(): Boolean {
+        var currentActivity = activity
         var result = false
         val cm = context?.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-                        result = true
-                    }
+            val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    result = true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    result = true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                    result = true
                 }
             }
         } else {
-            if (cm != null) {
-                val activeNetwork = cm.activeNetworkInfo
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
+            val activeNetwork = cm.activeNetworkInfo
+            if (activeNetwork != null) {
+                // connected to the internet
+                when (activeNetwork.type) {
+                    ConnectivityManager.TYPE_WIFI -> {
                         result = true
-                    } else if (activeNetwork.type == ConnectivityManager.TYPE_MOBILE) {
+                    }
+                    ConnectivityManager.TYPE_MOBILE -> {
                         result = true
-                    } else if (activeNetwork.type == ConnectivityManager.TYPE_VPN) {
+                    }
+                    ConnectivityManager.TYPE_VPN -> {
                         result = true
                     }
                 }
@@ -383,8 +368,8 @@ class HomeFragment : Fragment() {
         return result
     }
 
-    fun getLocation() {
-        var currentActivity = getActivity()
+    private fun getLocation() {
+        val currentActivity = activity
 
         //We check if we have permission to get location
         if (currentActivity?.let {
@@ -400,19 +385,19 @@ class HomeFragment : Fragment() {
         //Gpsenabled og networkenabled er egentlig litt feil å si, det betyr egentlig mer typ hva som er tilgjengelig og ikke om den er enabled eller ikke
         locationManager =
             currentActivity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        var gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        var networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        var wifiEnabled = locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)
+        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        val wifiEnabled = locationManager.isProviderEnabled(PASSIVE_PROVIDER)
 
         fun useWifi() {
             //Make toast with message that wifi is enabled and that the app will not work without gps
-            var l = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
+            val l = locationManager.getLastKnownLocation(PASSIVE_PROVIDER)
             if (l != null) {
                 location = l
                 grabInfo(ChosenLocation("", 0.0, 0.0))
             }
             locationManager.requestLocationUpdates(
-                LocationManager.PASSIVE_PROVIDER,
+                PASSIVE_PROVIDER,
                 0,
                 0f,
                 locationListener
@@ -424,12 +409,12 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "No internet available", Toast.LENGTH_LONG).show()
         } else {
             if (networkEnabled) {
-                var l = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                val l = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                 if (l != null) {
                     location = l
                     grabInfo(ChosenLocation("", 0.0, 0.0))
                 } else {
-                    useWifi();
+                    useWifi()
                 }
                 locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
@@ -438,12 +423,12 @@ class HomeFragment : Fragment() {
                     locationListener
                 )
             } else if (gpsEnabled) {
-                var l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                val l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 if (l != null) {
                     location = l
                     grabInfo(ChosenLocation("", 0.0, 0.0))
                 } else {
-                    useWifi();
+                    useWifi()
                 }
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -453,35 +438,35 @@ class HomeFragment : Fragment() {
                 )
             } else if (wifiEnabled) {
                 //Make toast with message that wifi is enabled and that the app will not work without gps
-                var l = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
+                val l = locationManager.getLastKnownLocation(PASSIVE_PROVIDER)
                 if (l != null) {
                     location = l
                     grabInfo(ChosenLocation("", 0.0, 0.0))
                 } else {
-                    useWifi();
+                    useWifi()
                 }
                 locationManager.requestLocationUpdates(
-                    LocationManager.PASSIVE_PROVIDER,
+                    PASSIVE_PROVIDER,
                     0,
                     0f,
                     locationListener
                 )
             } else {
                 //Show AlertDialog that LocationServices is disabled and that the user should enable it in settings or dismiss if they dont want to enable it
-                var alertDialog = AlertDialog.Builder(context)
+                val alertDialog = AlertDialog.Builder(context)
                 alertDialog.setTitle("Stedstjenester")
                 alertDialog.setMessage("Vennligst slå på stedstjenester i innstillingene dine.")
                 alertDialog.setPositiveButton(
-                    "Tillat",
-                    DialogInterface.OnClickListener { dialog, which ->
-                        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                        startActivity(intent)
-                    })
+                    "Tillat"
+                ) { _, _ ->
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+                }
                 alertDialog.setNegativeButton(
-                    "Nei",
-                    DialogInterface.OnClickListener { dialog, which ->
-                        //Ingenting skjer hvis nei.
-                    })
+                    "Nei"
+                ) { _, _ ->
+                    //Ingenting skjer hvis nei.
+                }
                 alertDialog.show()
 
             }
@@ -489,7 +474,7 @@ class HomeFragment : Fragment() {
     }
 
     //Setter UV pin og tekst i detjalert view
-    fun setUvPin(f: Float) {
+    private fun setUvPin(f: Float) {
         val view: View = binding.imageViewUvPin
         val params = view.layoutParams as PercentRelativeLayout.LayoutParams
         val info = params.percentLayoutInfo
@@ -497,37 +482,37 @@ class HomeFragment : Fragment() {
         view.requestLayout()
     }
 
-    fun setUvPinTekst(f: Float, d: Double) {
+    private fun setUvPinTekst(f: Float, d: Double) {
         val view: View = binding.textViewUvPinTall
         val params = view.layoutParams as PercentRelativeLayout.LayoutParams
         val info = params.percentLayoutInfo
 
         if (d > 11.0) {
             info.startMarginPercent = f - 0.02f
-            binding.textViewUvPinTall.setText("11+")
+            binding.textViewUvPinTall.text = "11+"
             binding.textViewUvPinTall.gravity = Gravity.END
-        } else if (d >= 10.5 && d <= 11.0) {
+        } else if (d in (10.5..11.0)) {
             info.startMarginPercent = f - 0.05f
-            binding.textViewUvPinTall.setText(d.toString())
+            binding.textViewUvPinTall.text = d.toString()
             binding.textViewUvPinTall.gravity = Gravity.CENTER
         } else if (d <= 0.4) {
             info.startMarginPercent = 0.0f
             binding.textViewUvPinTall.gravity = Gravity.START
-            binding.textViewUvPinTall.setText(d.toString())
+            binding.textViewUvPinTall.text = d.toString()
         } else {
             info.startMarginPercent = f - 0.05f
-            binding.textViewUvPinTall.setText(d.toString())
+            binding.textViewUvPinTall.text = d.toString()
             binding.textViewUvPinTall.gravity = Gravity.CENTER
         }
         view.requestLayout()
     }
 
-    fun setUvAlle(f: Float, d: Double) {
+    private fun setUvAlle(f: Float, d: Double) {
         setUvPin(f)
         setUvPinTekst(f, d)
     }
 
-    fun calculateHemisphere(latitude: Number): String {
+    private fun calculateHemisphere(latitude: Number): String {
         var hemisphere = "N"
         if (latitude.toDouble() < 0) {
             hemisphere = "S"
@@ -535,23 +520,23 @@ class HomeFragment : Fragment() {
         return hemisphere
     }
 
-    fun updateVitaminDInfo(fitztype: Number, uvindex: Int, latitude: Double, longitude: Double) {
-        var vitaminDDataSource = VitaminDDataSource()
-        var hemisphere = calculateHemisphere(latitude)
-        var sunBurnRes =
+    private fun updateVitaminDInfo(fitztype: Number, uvindex: Int, latitude: Double, longitude: Double) {
+        val vitaminDDataSource = VitaminDDataSource()
+        val hemisphere = calculateHemisphere(latitude)
+        val sunBurnRes =
             vitaminDDataSource.calculateTimeTillSunBurn(fitztype.toFloat(), uvindex.toFloat())
-        var vitaminDRes = vitaminDDataSource.calculateVitaminDUIPerHour(
+        val vitaminDRes = vitaminDDataSource.calculateVitaminDUIPerHour(
             fitztype.toFloat(),
             hemisphere,
             uvindex.toFloat()
         )
 
-        binding.timeTillSunburn.setText(sunBurnRes.toString())
-        binding.vitaminDPerHour.setText(vitaminDRes.toString())
+        binding.timeTillSunburn.text = sunBurnRes.toString()
+        binding.vitaminDPerHour.text = vitaminDRes.toString()
     }
 
-    fun updateSunscreen(uvIndex: Number) {
-        var roundedUvIndex = uvIndex.toDouble().roundToInt()
+    private fun updateSunscreen(uvIndex: Number) {
+        val roundedUvIndex = uvIndex.toDouble().roundToInt()
         //Ekstrem
         if (roundedUvIndex >= 11) {
             binding.imageViewSolkrem.setImageResource(R.drawable.solkrem_lang_50pluss)
@@ -570,11 +555,11 @@ class HomeFragment : Fragment() {
         }
         //Lav
         else if (roundedUvIndex >= 0) {
-            binding.imageViewSolkrem.setImageResource(R.drawable.solkrem_lang_25)
+            binding.imageViewSolkrem.setImageResource(R.drawable.solkrem_lang_0)
         }
     }
 
-    fun setUvBar(uv: Int, d: Double) {
+    private fun setUvBar(uv: Int, d: Double) {
         when (uv) {
             0 -> setUvAlle(0.0f, d)
             1 -> setUvAlle(0.0818f, d)
@@ -592,16 +577,16 @@ class HomeFragment : Fragment() {
     }
 
     //End of set UV pin og UV tekst
-    fun startObserverne(chosenLocation: ChosenLocation) {
-        var chosenLocation = chosenLocation
+    private fun startObserverne(chosenLocation: ChosenLocation) {
+        val chosenLocation = chosenLocation
         // Get UV data
-        getActivity()?.let {
+        activity?.let {
             homeViewModel.getUvData().observe(it) {
-                binding.textUvi.setText(it.toString() + " uvi")
+                binding.textUvi.setText("$it uvi")
                 setUvBar(it.roundToInt(), it)
                 uvIndex = it.roundToInt()
                 updateSunscreen(uvIndex)
-                var fitztype =
+                val fitztype =
                     dataSourceRepository.getFitzType() // Henter hudtype fra shared preferences, gir 0 hvis ikke satt
                 updateVitaminDInfo(fitztype, uvIndex, chosenLocation.lat, chosenLocation.lon)
             }
@@ -613,14 +598,14 @@ class HomeFragment : Fragment() {
             }
         }
         //Updates DetaljerAddresse to Location based on GeoLocation
-        getActivity()?.let {
-            homeViewModel.getLocationName().observe(it) { it ->
-                binding.detaljerAddresse.setText(it.toString())
+        getActivity()?.let { it ->
+            homeViewModel.getLocationName().observe(it) {
+                binding.detaljerAddresse.text = it.toString()
             }
         }
 
         // Update UV forecast graph
-        getActivity()?.let {
+        activity?.let {
             homeViewModel.getUvForecastData().observe(it) { uvDataForecast ->
                 homeViewModel.getUvForecastStartTime().observe(it) { startTime ->
                     // Call UvForecastGraphView addData
@@ -631,25 +616,25 @@ class HomeFragment : Fragment() {
         }
 
         // Update current temp in card
-        getActivity()?.let {
+        activity?.let {
             homeViewModel.getCurrentTemp().observe(it) { temp ->
-                var formatedTemp: String
+                val formatedTemp: String
                 // Adjust chosen unit
                 if (dataSourceRepository.getTempUnit()) {
                     formatedTemp = "$temp °C"
                 } else {
-                    val f_temp = (temp * 1.8) + 32
+                    val fTemp = (temp * 1.8) + 32
                     val df = DecimalFormat("#.#")
                     df.roundingMode = RoundingMode.DOWN
-                    val t = df.format(f_temp)
+                    val t = df.format(fTemp)
                     formatedTemp = "$t °F"
                 }
-                binding.detaljerTemperatur.setText(formatedTemp)
+                binding.detaljerTemperatur.text = formatedTemp
             }
         }
 
         //Update cloud-picture
-        getActivity()?.let {
+        activity?.let {
             homeViewModel.getCurrentSky().observe(it) { sky ->
                 var lightMode = true
 
@@ -834,7 +819,7 @@ class HomeFragment : Fragment() {
     }
 
     //Ser på klokken og bytter blobb
-    fun settBlobb() {
+    private fun settBlobb() {
         when (formatted) {
             0.0 -> binding.vaermeldingBlob.setImageResource(R.drawable.pink_blob)
             1.0 -> binding.vaermeldingBlob.setImageResource(R.drawable.pink_blob)

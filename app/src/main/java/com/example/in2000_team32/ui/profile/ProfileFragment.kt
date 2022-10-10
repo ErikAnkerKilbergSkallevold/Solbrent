@@ -59,8 +59,8 @@ class ProfileFragment : Fragment() {
         dataSourceRepository = DataSourceRepository(requireContext())
 
         //Buttons from settinsg page
-        var darkModeButtonTextLower : TextView = root.findViewById(R.id.darkModeButtonTextLower)
-        var darkModeButton : SwitchMaterial = root.findViewById(R.id.darkModeButton)
+        val darkModeButtonTextLower : TextView = root.findViewById(R.id.darkModeButtonTextLower)
+        val darkModeButton : SwitchMaterial = root.findViewById(R.id.darkModeButton)
         val varslerButtonTextLower : TextView = root.findViewById(R.id.VarslerButtonTextLower)
         val varslerButton : SwitchMaterial = root.findViewById(R.id.VarslerButton)
         val unitButton : SwitchMaterial = root.findViewById(R.id.unitSettingsButton)
@@ -152,7 +152,7 @@ class ProfileFragment : Fragment() {
                         homeViewModel.writeColor(selectedColor) //Skriver til sharedPreferences den valgte hudfargen
 
                         // Mapping av color til fitz (burde egentlig vært gjort motsatt, men det er litt jobb å fikse)
-                        var fitzType : Int
+                        val fitzType : Int
                         when (selectedColor) {
                             -798540 -> fitzType = 1
                             -1657709 -> fitzType = 2
@@ -177,7 +177,7 @@ class ProfileFragment : Fragment() {
         if(farge != 0) {
             binding.constraintLayout1.setBackgroundColor(homeViewModel.getColor())
         } else {
-            var background = ResourcesCompat.getDrawable(this.resources, R.drawable.bg_gradient, null) as GradientDrawable
+            val background = ResourcesCompat.getDrawable(this.resources, R.drawable.bg_gradient, null) as GradientDrawable
             binding.constraintLayout1.setBackgroundDrawable(background)
         }
 
@@ -201,13 +201,13 @@ class ProfileFragment : Fragment() {
 
     //Function to change theme to dark mode or light mode when the user clicks on the button
     fun changeTheme(view: View) {
-        val currentTheme = sharedPreferences?.getThemeMode()
+        val currentTheme = sharedPreferences.getThemeMode()
         if (currentTheme == "light") {
-            sharedPreferences?.setThemeMode("dark")
+            sharedPreferences.setThemeMode("dark")
             activity?.recreate()
         }
         else {
-            sharedPreferences?.setThemeMode("light")
+            sharedPreferences.setThemeMode("light")
             activity?.recreate()
         }
     }

@@ -11,27 +11,27 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 
 class ViewPagerAdapter(val context: Context) : PagerAdapter() {
-    var layoutInflater: LayoutInflater? = null
+    private var layoutInflater: LayoutInflater? = null
 
-    val imgArray = arrayOf(
+    private val imgArray = arrayOf(
         R.drawable.applogo,
         R.drawable.mappin,
         R.drawable.hudfargebilde
     )
 
-    val headArray = arrayOf(
+    private val headArray = arrayOf(
         "Silent?",
         "Posisjon",
         "Hudfarge"
     )
 
-    val descriptionArray = arrayOf(
+    private val descriptionArray = arrayOf(
         "Slipp å bli solbrent med solbrent?-appen. Få oversikt over UV-styrke, historikk, D-vitamin opptak og påminnelser om når du bør smøre deg basert på din hudfarge!",
         "For å hente UV-data og været der du er trenger vi posisjonen din. Vennligst velg nøyaktig presisjon når du får valget. Da vil alt fungere som det skal :)",
         "Velg hudfargen din! Dette er nødvendig for å regne ut hvor lenge det er til du blir solbrent og hvor mye D-vitamin du tar opp i timen. (Merk at tjukke klær vil redusere D-vitamin opptaket)"
     )
 
-    val buttonText = arrayOf(
+    private val buttonText = arrayOf(
         "Neste side",
         "Neste side",
         "Åpne app"
@@ -49,13 +49,13 @@ class ViewPagerAdapter(val context: Context) : PagerAdapter() {
         layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = layoutInflater!!.inflate(R.layout.slider,container,false)
         val img = view.findViewById<ImageView>(R.id.image)
-        val txt_head = view.findViewById<TextView>(R.id.textHeader)
-        val txt_desc = view.findViewById<TextView>(R.id.textForklaring)
+        val txtHead = view.findViewById<TextView>(R.id.textHeader)
+        val txtDesc = view.findViewById<TextView>(R.id.textForklaring)
         val button = view.findViewById<Button>(R.id.onboardButton)
 
         img.setImageResource(imgArray[position])
-        txt_head.text = headArray[position]
-        txt_desc.text = descriptionArray[position]
+        txtHead.text = headArray[position]
+        txtDesc.text = descriptionArray[position]
         button.text = buttonText[position]
 
 

@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -29,33 +28,33 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: androidx.navigation.NavController
     var internetLost = false
 
-    fun isNetworkAvailable(): Boolean {
+    private fun isNetworkAvailable(): Boolean {
         var currentActivity = this
         var result = false
         val cm = this.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-                        result = true
-                    }
+            val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    result = true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    result = true
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                    result = true
                 }
             }
         } else {
-            if (cm != null) {
-                val activeNetwork = cm.activeNetworkInfo
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.type == ConnectivityManager.TYPE_WIFI) {
+            val activeNetwork = cm.activeNetworkInfo
+            if (activeNetwork != null) {
+                // connected to the internet
+                when (activeNetwork.type) {
+                    ConnectivityManager.TYPE_WIFI -> {
                         result = true
-                    } else if (activeNetwork.type == ConnectivityManager.TYPE_MOBILE) {
+                    }
+                    ConnectivityManager.TYPE_MOBILE -> {
                         result = true
-                    } else if (activeNetwork.type == ConnectivityManager.TYPE_VPN) {
+                    }
+                    ConnectivityManager.TYPE_VPN -> {
                         result = true
                     }
                 }
@@ -66,9 +65,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var dataSourceSharedPreferences = DataSourceSharedPreferences(this)
-        getSupportActionBar()?.hide()
-        contextOfApplication = getApplicationContext()
+        val dataSourceSharedPreferences = DataSourceSharedPreferences(this)
+        supportActionBar?.hide()
+        contextOfApplication = applicationContext
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -22,22 +22,21 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.in2000_team32.api.DataSourceRepository
 import com.example.in2000_team32.databinding.FragmentMapBinding
 import java.util.*
+import kotlin.math.hypot
 
 
 class MapFragment : Fragment() {
-    private var VARSEL_TID: Long = 3600000
+    private var VARSELTID: Long = 3600000
     private var tidText : TextView? = null
     private var cdTimer: CountDownTimer? = null
     private var cdtRunning: Boolean = false
-    private var cdtTimeLeft: Long = VARSEL_TID
+    private var cdtTimeLeft: Long = VARSELTID
     private var cdtEndTime: Long? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private lateinit var binding: FragmentMapBinding
     private lateinit var dataSourceRepository: DataSourceRepository
-
-    var tidGaar = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +52,7 @@ class MapFragment : Fragment() {
         dataSourceRepository = DataSourceRepository(requireContext())
 
         //Viser og gjemmer brent seg tips
-        binding.brentSegShow.setOnClickListener() {
+        binding.brentSegShow.setOnClickListener {
             // previously invisible view
             val myView: View = binding.brentSegTips
 
@@ -64,7 +63,7 @@ class MapFragment : Fragment() {
                 val cy = myView.height / 2
 
                 // get the final radius for the clipping circle
-                val finalRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
                 // create the animator for this view (the start radius is zero)
                 val anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0f, finalRadius)
@@ -78,7 +77,7 @@ class MapFragment : Fragment() {
 
         }
         //Gjemmer
-        binding.brentSegHide.setOnClickListener() {
+        binding.brentSegHide.setOnClickListener {
             // previously visible view
             val myView: View = binding.brentSegTips
 
@@ -89,7 +88,7 @@ class MapFragment : Fragment() {
                 val cy = myView.height / 2
 
                 // get the initial radius for the clipping circle
-                val initialRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
+                val initialRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
                 // create the animation (the final radius is zero)
                 val anim =
@@ -136,7 +135,7 @@ class MapFragment : Fragment() {
                 val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                 val timeAtBtnClick = System.currentTimeMillis()
-                val secondsInMillis = VARSEL_TID
+                val secondsInMillis = VARSELTID
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtBtnClick + secondsInMillis, pendingIntent)
             }
@@ -145,7 +144,7 @@ class MapFragment : Fragment() {
             if (cdtRunning) {
                 restartTimer()
             } else {
-                cdtTimeLeft = VARSEL_TID
+                cdtTimeLeft = VARSELTID
                 startTimer()
             }
 
@@ -154,13 +153,13 @@ class MapFragment : Fragment() {
         return root
     }
 
-    fun timer(){
+    private fun timer(){
         binding.smurtSegButton.visibility = View.GONE
         binding.smurtSegAvbryt.visibility = View.VISIBLE
         binding.smurtSegIgjen.visibility = View.VISIBLE
     }
 
-    fun stoppTimer(){
+    private fun stoppTimer(){
         binding.smurtSegButton.visibility = View.VISIBLE
         binding.smurtSegAvbryt.visibility = View.GONE
         binding.smurtSegIgjen.visibility = View.GONE
@@ -188,14 +187,14 @@ class MapFragment : Fragment() {
 
         //Henter nedtellings data
         val prefs: SharedPreferences? = activity?.getSharedPreferences("tidIgjen", MODE_PRIVATE)
-        cdtTimeLeft = prefs!!.getLong("millisLeft", VARSEL_TID)
+        cdtTimeLeft = prefs!!.getLong("millisLeft", VARSELTID)
         cdtRunning = prefs.getBoolean("timerRunning", false)
 
         //Oppdaterer texten på siden
         var minutes = ((cdtTimeLeft / 1000) / 60).toInt()
         var seconds = ((cdtTimeLeft / 1000) % 60).toInt()
         var timeLeft = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-        tidText!!.setText(timeLeft)
+        tidText!!.text = timeLeft
 
         if (cdtRunning){
             cdtEndTime = prefs.getLong("endTime", 0)
@@ -208,7 +207,7 @@ class MapFragment : Fragment() {
                 minutes = ((cdtTimeLeft / 1000) / 60).toInt()
                 seconds = ((cdtTimeLeft / 1000) % 60).toInt()
                 timeLeft = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
-                tidText!!.setText(timeLeft)
+                tidText!!.text = timeLeft
             } else {
                 startTimer()
             }
@@ -242,12 +241,12 @@ class MapFragment : Fragment() {
 
                 val timeLeft = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
 
-                tidText!!.setText(timeLeft)
+                tidText!!.text = timeLeft
             }
 
             override fun onFinish() {
                 cdtRunning = false
-                cdtTimeLeft = VARSEL_TID
+                cdtTimeLeft = VARSELTID
             }
 
         }.start()
@@ -256,7 +255,7 @@ class MapFragment : Fragment() {
     }
 
     private fun restartTimer() {
-        cdtTimeLeft = VARSEL_TID
+        cdtTimeLeft = VARSELTID
         cdTimer?.cancel()
         startTimer()
     }

@@ -5,13 +5,9 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 
 class DataSourceSharedPreferences(val context: Context) {
-    private var sharedPref: SharedPreferences
-    private var profilSharedPref: SharedPreferences
-
-    init {
-        sharedPref = context.getSharedPreferences("metCache", 0)
-        profilSharedPref = context.getSharedPreferences("profilData", Context.MODE_PRIVATE)
-    }
+    private var sharedPref: SharedPreferences = context.getSharedPreferences("metCache", 0)
+    private var profilSharedPref: SharedPreferences =
+        context.getSharedPreferences("profilData", Context.MODE_PRIVATE)
 
     /**
      * Function takes in a MetResponseDto, and stores it
@@ -21,7 +17,7 @@ class DataSourceSharedPreferences(val context: Context) {
     fun writeMetCache(metResponseDto: MetResponseDto?) {
         // Saving an object in saved preferences
         val prefsEditor: SharedPreferences.Editor = sharedPref.edit()
-        val gson: Gson = Gson()
+        val gson = Gson()
 
         // Convert object to json
         val json: String = gson.toJson(metResponseDto)
@@ -35,11 +31,10 @@ class DataSourceSharedPreferences(val context: Context) {
      * shared preferences, and returns it if found.
      */
     fun getMetCache(): MetResponseDto? {
-        val gson: Gson = Gson()
+        val gson = Gson()
         val json: String? = sharedPref.getString("metResponseDto", "")
-        val metResponseDto: MetResponseDto? = gson.fromJson(json, MetResponseDto::class.java)
 
-        return metResponseDto
+        return gson.fromJson(json, MetResponseDto::class.java)
     }
 
     //Skriver valgt farge til sharedpreferences under "skinColor"
@@ -76,11 +71,10 @@ class DataSourceSharedPreferences(val context: Context) {
     }
 
     //Get chosen city from sharedpreferences. Return null if not found
-    fun getChosenLocation() : ChosenLocation? {
-        val gson: Gson = Gson()
+    fun getChosenLocation(): ChosenLocation? {
+        val gson = Gson()
         val json: String? = profilSharedPref.getString("location", "")
-        val chosenLocation: ChosenLocation? = gson.fromJson(json, ChosenLocation::class.java)
-        return chosenLocation
+        return gson.fromJson(json, ChosenLocation::class.java)
     }
 
     //Get theme mode

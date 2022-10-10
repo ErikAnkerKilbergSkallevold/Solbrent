@@ -15,17 +15,17 @@ class MetDataSource {
     suspend fun fetchMetWeatherForecast(latitude : Double, longitude : Double): MetResponseDto? {
         // Change this if we want to run a dummy server where we can control the weather
         val baseUrl = "https://in2000-apiproxy.ifi.uio.no/weatherapi/"
-        val path = "locationforecast/2.0/complete?lat=${latitude.toString()}&lon=${longitude.toString()}"
+        val path = "locationforecast/2.0/complete?lat=$latitude&lon=$longitude"
         val url = baseUrl + path
         val gson = Gson()
 
-        val runWithDummyApi: Boolean = false // Choose weather to get data from MET or Dummy API
+        val runWithDummyApi = false // Choose weather to get data from MET or Dummy API
 
         try {
             val response: MetResponseDto = gson.fromJson(Fuel.get(if (!runWithDummyApi) url else "http://10.0.2.2:1000/weather").awaitString(), MetResponseDto::class.java)
 
             // Setting UV index message based on UV index
-            var msg: String
+            val msg: String
             when (response.properties.timeseries[0].data.instant.details.ultraviolet_index_clear_sky.toInt()) {
                 0 -> msg = contextOfApplication.getString(R.string.uv_msg_0)
                 1 -> msg = contextOfApplication.getString(R.string.uv_msg_1)
@@ -47,7 +47,7 @@ class MetDataSource {
             return response
 
         } catch (exception: Exception) {
-            Log.d("fetchMetWeatherForecast", "Something went wrong on API call: [" + exception + "]")
+            Log.d("fetchMetWeatherForecast", "Something went wrong on API call: [$exception]")
             return null
         }
     }

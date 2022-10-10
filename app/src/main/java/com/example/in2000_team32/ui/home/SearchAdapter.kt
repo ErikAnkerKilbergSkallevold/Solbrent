@@ -4,27 +4,23 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.in2000_team32.MainActivity
 import com.example.in2000_team32.R
 import com.example.in2000_team32.api.ChosenLocation
 import com.example.in2000_team32.api.DataSourceRepository
-import com.example.in2000_team32.api.DataSourceSharedPreferences
 import com.example.in2000_team32.api.NominatimLocationFromString
 import com.example.in2000_team32.contextOfApplication
 
-class SearchAdapter(searchQueryElements : MutableList<NominatimLocationFromString>, context : Context?) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
-    var searchQueryElements : MutableList<NominatimLocationFromString> = searchQueryElements
+class SearchAdapter(var searchQueryElements: MutableList<NominatimLocationFromString>,
+                    var context: Context?
+) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     var dataSourceRepository = DataSourceRepository(contextOfApplication)
-    var context : Context? = context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchAdapter.ViewHolder {
         val v : View = LayoutInflater.from(parent.context).inflate(R.layout.search_query_element, parent, false)
         val dataSourceRepository = DataSourceRepository(contextOfApplication)
-        var chosenLocation : ChosenLocation? = dataSourceRepository.getChosenLocation()
+        val chosenLocation : ChosenLocation? = dataSourceRepository.getChosenLocation()
         if(chosenLocation != null) {
             if(chosenLocation.lon == searchQueryElements[viewType].lon?.toDouble() && chosenLocation.lat == searchQueryElements[viewType].lat?.toDouble()) {
                 v.setBackgroundColor(v.context.resources.getColor(R.color.light_green))
@@ -66,8 +62,8 @@ class SearchAdapter(searchQueryElements : MutableList<NominatimLocationFromStrin
                 val position = adapterPosition
                 if(position != RecyclerView.NO_POSITION){
                     //Save selected item in sharedPreferences for later use
-                    var chosenLocation = searchQueryElements[position]
-                    var chosenLocationObject = ChosenLocation(chosenLocation.address?.city ?: "", chosenLocation.lat?.toDouble() ?: 0.0, chosenLocation.lon?.toDouble() ?: 0.0)
+                    val chosenLocation = searchQueryElements[position]
+                    val chosenLocationObject = ChosenLocation(chosenLocation.address?.city ?: "", chosenLocation.lat?.toDouble() ?: 0.0, chosenLocation.lon?.toDouble() ?: 0.0)
 
                     dataSourceRepository.setChosenLocation(chosenLocationObject)
 
